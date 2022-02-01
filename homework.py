@@ -104,7 +104,6 @@ def main():
         try:
             response = get_api_answer(current_timestamp)
             homework = check_response(response)
-            logger.debug(homework)
             if not homework:
                 logger.debug('Отсутствует новый статус.')
                 current_timestamp = response.get(
