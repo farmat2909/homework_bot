@@ -40,9 +40,8 @@ def send_message(bot, message):
     """Отправка сообщения о статусе домашней работы."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
-    except error.BadRequest as err:
+    except error.BadRequest:
         logger.error('Ошибка отправки сообщения')
-        raise err(f'Ошибка отправки сообщения {err}')
 
 
 def get_api_answer(current_timestamp):
@@ -84,7 +83,6 @@ def parse_status(homework):
 
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
-    """Тест не проходит если не выбрасывать исключения KeyError"""
     if not isinstance(homework_name, str):
         logger.error('Отсутствует значение homework_name')
         raise KeyError('Отсутствует значение homework_name')
@@ -142,11 +140,10 @@ def main():
 
         except Exception as error:
             if error != new_error:
-                new_error = error
                 message = f'Сбой в работе программы: {error}'
                 logger.error(f'Сбой в работе программы: {error}')
                 send_message(bot, message)
-                time.sleep(RETRY_TIME)
+                new_error = error
             time.sleep(RETRY_TIME)
         else:
             send_message(bot, message)
